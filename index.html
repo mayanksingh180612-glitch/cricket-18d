@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mayank Cricket Champions 3D</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071426;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:15px;background:#092b43}
+h1{margin:0;color:#ffdf65;font-size:clamp(23px,4vw,36px)}
+p{color:#d0e5f5}
+main{max-width:1200px;margin:auto;padding:12px}
+.panel{background:#10253b;border:1px solid #2d4a61;padding:13px;border-radius:14px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row>*{flex:1;min-width:130px}
+select,button{width:100%;padding:12px;border:0;border-radius:9px;font-size:15px}
+select{background:#07182a;color:white;border:1px solid #426079}
+button{cursor:pointer;font-weight:bold;background:#ffdf65;color:#172335}
+button:active{transform:scale(.97)}
+.green{background:#12c78b;color:#052b1e}
+.blue{background:#237ded;color:white}
+.red{background:#f05c66;color:white}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;text-align:center}
+.stat{background:#07182a;padding:12px 2px;border-radius:9px}
+.stat strong{display:block;color:#ffe06b;font-size:clamp(20px,4vw,30px)}
+.stat span{font-size:11px;color:#c4d6e5}
+.stadium{
+height:440px;position:relative;overflow:hidden;border-radius:15px;
+background:linear-gradient(#57b5ed 0%,#b5e2ff 38%,#586a77 39%,#192d3b 53%,#198349 54%,#07552e 100%);
+isolation:isolate
+}
+.sun{position:absolute;right:10%;top:7%;height:42px;width:42px;
+background:#fff1a0;border-radius:50%;box-shadow:0 0 45px #fff7b0}
+.roof{position:absolute;top:24%;left:8%;width:84%;height:24%;
+background:repeating-linear-gradient(90deg,#bec8ce 0 15px,#738896 15px 18px);
+clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);opacity:.8}
+.crowd{position:absolute;top:32%;height:22%;width:100%;
+background:repeating-linear-gradient(90deg,#122d57 0 8px,#d6dce0 8px 12px,#b93340 12px 17px,#243d64 17px 25px);
+border-top:8px solid #e1e9ee;border-bottom:7px solid #d1e2eb}
+.crowd:after{content:"INTERNATIONAL CRICKET STADIUM  •  WORLD CUP";
+position:absolute;top:30%;width:100%;text-align:center;background:#123b69;
+font-weight:bold;font-size:clamp(10px,2vw,18px);padding:4px}
+.grass{position:absolute;inset:54% 0 0;
+background:repeating-linear-gradient(90deg,#188049 0 70px,#167443 70px 140px)}
+.boundary{position:absolute;left:7%;right:7%;top:47%;height:53%;
+border:3px solid #d9efc4;border-radius:50% 50% 0 0}
+.pitch{position:absolute;left:36%;width:28%;top:48%;height:49%;
+background:repeating-linear-gradient(0deg,#c8a775 0 35px,#d6bc8d 35px 70px);
+clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.crease{position:absolute;left:23%;right:23%;height:3px;background:white}
+.crease.one{top:20%}.crease.two{bottom:15%}
+.stumps{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+font-size:29px;z-index:4;filter:drop-shadow(0 2px 3px black)}
+.batter{position:absolute;z-index:5;bottom:5%;left:43%;font-size:clamp(42px,7vw,68px);
+filter:drop-shadow(0 5px 3px #15221c);animation:breathe 2s infinite}
+.bowler{position:absolute;z-index:5;top:48%;left:48%;font-size:42px;
+animation:run 1.5s infinite}
+.ball{position:absolute;z-index:8;width:13px;height:13px;border-radius:50%;
+background:#ef2637;box-shadow:0 0 8px white;display:none}
+.ball.go{display:block;animation:deliver .7s ease-in forwards}
+@keyframes deliver{0%{top:52%;left:50%;transform:scale(.7)}
+60%{top:69%;left:49%;transform:scale(1.4)}
+100%{top:84%;left:48%;transform:scale(1)}}
+@keyframes run{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.notice{position:absolute;z-index:10;top:10px;left:10px;right:10px;text-align:center;
+font-weight:bold;text-shadow:0 2px 4px black;color:white}
+.comment{text-align:center;min-height:25px;color:#ffe06b;font-weight:bold;margin:12px}
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.footer{text-align:center;color:#9db7cc;padding:15px;font-size:12px}
+@media(max-width:520px){
+.stadium{height:340px}.shots{grid-template-columns:repeat(2,1fr)}
+.panel{padding:10px}.crowd:after{font-size:10px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🏏 MAYANK CRICKET CHAMPIONS</h1>
+<p>International Cricket • Stadium Edition</p>
+</header>
+<main>
+<section class="panel">
+<div class="row">
+<div><label>Your Team</label><select id="teamA"></select></div>
+<div><label>Opponent</label><select id="teamB"></select></div>
+</div>
+<div class="row" style="margin-top:10px">
+<div><label>Change Batter</label><select id="batter"></select></div>
+<div><label>Change Bowler</label><select id="bowler"></select></div>
+</div>
+<div class="row" style="margin-top:10px">
+<button onclick="start()">▶ New Match</button>
+<button class="green" onclick="changeBat()">🔄 Change Batter</button>
+<button class="blue" onclick="changeBowl()">🎯 Change Bowler</button>
+</div>
+</section>
+
+<section class="panel stats">
+<div class="stat"><strong id="score">0/0</strong><span>SCORE</span></div>
+<div class="stat"><strong id="overs">0.0</strong><span>OVERS</span></div>
+<div class="stat"><strong id="target">—</strong><span>TARGET</span></div>
+<div class="stat"><strong id="rate">0.00</strong><span>RUN RATE</span></div>
+</section>
+
+<section class="stadium">
+<div class="sun"></div>
+<div class="roof"></div>
+<div class="crowd"></div>
+<div class="grass"></div>
+<div class="boundary"></div>
+<div class="pitch"><div class="crease one"></div><div class="crease two"></div></div>
+<div class="notice" id="match">INDIA vs AUSTRALIA • INTERNATIONAL MATCH</div>
+<div class="bowler" id="bowlerPic">🏃🏻</div>
+<div class="batter" id="batterPic">🏏</div>
+<div class="stumps">▥</div>
+<div class="ball" id="ball"></div>
+</section>
+<div class="comment" id="comment">Select teams and press New Match!</div>
+
+<section class="panel">
+<h3>🎮 Batting Controls</h3>
+<p>Press Bowl Next Ball, then choose your shot.</p>
+<div class="shots">
+<button class="green" onclick="shot('Defend')">🛡️ Defend</button>
+<button onclick="shot('Drive')">🏏 Drive</button>
+<button class="blue" onclick="shot('Loft')">🚀 Loft Shot</button>
+<button onclick="shot('Pull')">💥 Pull Shot</button>
+<button class="green" onclick="shot('Sweep')">↔️ Sweep</button>
+<button class="red" onclick="shot('Big Hit')">🔥 Big Hit</button>
+</div>
+<div class="row" style="margin-top:10px">
+<button class="green" onclick="bowl()">🎯 Bowl Next Ball</button>
+<button class="blue" onclick="overChange()">🔁 Change Over</button>
+</div>
+</section>
+
+<section class="panel">
+<h3>📊 Match Scorecard</h3>
+<p id="batterStats">Batter: 0 runs (0 balls)</p>
+<p id="bowlerStats">Bowler: 0 wickets</p>
+<p id="last">Last balls: —</p>
+<p id="innings">20-over match • 120 legal balls per innings</p>
+</section>
+<div class="footer">Created by Mayank Singh • Cricket Game Demo</div>
+</main>
+<script>
+const roster={
+"India":["Rohit Sharma","Virat Kohli","Shubman Gill","KL Rahul","Hardik Pandya","Ravindra Jadeja","Jasprit Bumrah"],
+"Australia":["Travis Head","Steve Smith","Marnus Labuschagne","Glenn Maxwell","Pat Cummins","Mitchell Starc"],
+"England":["Joe Root","Harry Brook","Ben Stokes","Jos Buttler","Jofra Archer"],
+"Pakistan":["Babar Azam","Mohammad Rizwan","Fakhar Zaman","Shaheen Afridi","Naseem Shah"],
+"South Africa":["Aiden Markram","Quinton de Kock","David Miller","Kagiso Rabada"],
+"New Zealand":["Kane Williamson","Daryl Mitchell","Tom Latham","Mitchell Santner"],
+"Sri Lanka":["Kusal Mendis","Pathum Nissanka","Wanindu Hasaranga"],
+"Bangladesh":["Litton Das","Mushfiqur Rahim","Shakib Al Hasan"],
+"Afghanistan":["Rahmanullah Gurbaz","Ibrahim Zadran","Rashid Khan"],
+"West Indies":["Shai Hope","Nicholas Pooran","Andre Russell"],
+"Ireland":["Paul Stirling","Harry Tector"],
+"Zimbabwe":["Sikandar Raza","Sean Williams"],
+"Netherlands":["Scott Edwards","Bas de Leede"],
+"Scotland":["Richie Berrington","George Munsey"],
+"Nepal":["Rohit Paudel","Dipendra Singh Airee"],
+"USA":["Monank Patel","Aaron Jones"],
+"UAE":["Muhammad Waseem","Asif Khan"],
+"Oman":["Aqib Ilyas","Zeeshan Maqsood"]
+};
+const $=id=>document.getElementById(id);
+for(let t in roster){
+$("teamA").add(new Option(t,t));
+$("teamB").add(new Option(t,t));
+}
+$("teamA").value="India";$("teamB").value="Australia";
+let runs=0,wickets=0,balls=0,target=0,innings=1;
+let battingRuns=0,battingBalls=0,bowlerWickets=0,ready=false,waiting=false;
+let usedBat=[],usedBowl=[],results=[];
+function say(t){$("comment").textContent=t}
+function players(){
+let bt=innings===1?$("teamA").value:$("teamB").value;
+let bw=innings===1?$("teamB").value:$("teamA").value;
+fill("batter",roster[bt].filter(x=>!usedBat.includes(x)));
+fill("bowler",roster[bw].filter(x=>!usedBowl.includes(x)));
+if(!$("batter").options.length)fill("batter",roster[bt]);
+if(!$("bowler").options.length)fill("bowler",roster[bw]);
+names();
+}
+function fill(id,a){
+$(id).innerHTML="";
+a.forEach(x=>$(id).add(new Option(x,x)));
+}
+function names(){
+$("batterPic").textContent="🏏";
+$("match").textContent=$("teamA").value.toUpperCase()+" VS "+$("teamB").value.toUpperCase();
+}
+function start(){
+runs=0;wickets=0;balls=0;target=0;innings=1;
+battingRuns=0;battingBalls=0;bowlerWickets=0;
+usedBat=[];usedBowl=[];results=[];ready=true;waiting=false;
+players();render();say("Match started! Bowl your first ball.");
+}
+function changeBat(){
+if(!ready)return start();
+usedBat.push($("batter").value);battingRuns=0;battingBalls=0;
+players();say("New batter: "+$("batter").value);render();
+}
+function changeBowl(){
+if(!ready)return;
+usedBowl.push($("bowler").value);bowlerWickets=0;
+players();say("New bowler: "+$("bowler").value);render();
+}
+function bowl(){
+if(!ready){start();return}
+if(waiting){say("Choose your shot first!");return}
+if(balls>=120||wickets>=10){finish();return}
+waiting=true;
+$("ball").classList.remove("go");
+void $("ball").offsetWidth;
+$("ball").classList.add("go");
+$("bowlerPic").style.animation="run .3s 3";
+say($("bowler").value+" is bowling! Choose a shot.");
+}
+function shot(type){
+if(!ready){start();return}
+if(!waiting){say("First press Bowl Next Ball!");return}
+waiting=false;
+$("ball").classList.remove("go");
+balls++;battingBalls++;
+let r=Math.random(),v;
+if(r<.09&&type!=="Defend")v="W";
+else if(r<.20)v=0;
+else if(type==="Defend")v=[0,0,1][Math.floor(Math.random()*3)];
+else if(type==="Drive")v=[1,2,3,4,4][Math.floor(Math.random()*5)];
+else if(type==="Sweep")v=[1,1,2,2,4][Math.floor(Math.random()*5)];
+else if(type==="Pull")v=[1,2,4,4,6,"W"][Math.floor(Math.random()*6)];
+else v=[0,2,4,6,6,"W"][Math.floor(Math.random()*6)];
+if(v==="W"){
+wickets++;bowlerWickets++;usedBat.push($("batter").value);
+battingRuns=0;
+say("💥 OUT! "+$("batter").value+" is out!");
+if(wickets<10)players();
+}else{
+runs+=v;battingRuns+=v;
+say(v===6?"🚀 SIX! Amazing shot!":v===4?"🏏 FOUR! Beautiful boundary!":v===0?"Dot ball!":"You scored "+v+" run(s)!");
+}
+results.unshift(v);results=results.slice(0,12);
+render();
+if(innings===2&&runs>=target){ready=false;say("🏆 "+$("teamB").value+" won the match!");return}
+if(balls>=120||wickets>=10)setTimeout(finish,700);
+}
+function overChange(){
+if(balls===0||balls%6!==0){say("Complete 6 legal balls to change over!");return}
+changeBowl();
+}
+function finish(){
+if(!ready)return;
+if(innings===1){
+target=runs+1;innings=2;runs=0;wickets=0;balls=0;
+battingRuns=0;battingBalls=0;bowlerWickets=0;
+usedBat=[];usedBowl=[];results=[];players();render();
+say("Second innings! "+$("teamB").value+" need "+target+" runs.");
+}else{
+ready=false;
+say(runs>=target?"🏆 "+$("teamB").value+" won!":runs===target-1?"Match tied!":"🏆 "+$("teamA").value+" won!");
+}
+}
+function render(){
+$("score").textContent=runs+"/"+wickets;
+$("overs").textContent=Math.floor(balls/6)+"."+(balls%6);
+$("target").textContent=target||"—";
+$("rate").textContent=balls?(runs/(balls/6)).toFixed(2):"0.00";
+$("batterStats").textContent="Batter: "+$("batter").value+" • "+battingRuns+" runs ("+battingBalls+" balls)";
+$("bowlerStats").textContent="Bowler: "+$("bowler").value+" • "+bowlerWickets+" wickets";
+$("last").textContent="Last balls: "+(results.join(" • ")||"—");
+$("innings").textContent=(innings===1?"First innings":"Second innings")+" • "+(120-balls)+" legal balls remaining";
+}
+$("teamA").onchange=()=>{if(ready)start();else players()};
+$("teamB").onchange=()=>{if(ready)start();else players()};
+$("batter").onchange=names;$("bowler").onchange=names;
+players();
+</script>
+</body>
+</html>
